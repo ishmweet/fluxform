@@ -40,3 +40,9 @@ pnpm-debug.log*
 *~
 .DS_Store
 Thumbs.db
+
+# Linux Packaging Outputs
+deb_pkg/
+rpmbuild/
+*.deb
+*.rpm
