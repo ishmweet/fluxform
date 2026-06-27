@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=FluxForm
+Comment=Offline File Converter
+Exec=fluxform
+Icon=fluxform
+Terminal=false
+Type=Application
+Categories=Utility;

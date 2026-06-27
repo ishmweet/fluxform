@@ -2,9 +2,15 @@
   "$schema": "https://wails.io/schemas/config.v2.json",
   "name": "fluxform",
   "build:tags": "webkit2_41",
-  "outputfilename": "fluxform_tmp",
+  "outputfilename": "fluxform",
   "frontend:install": "npm install",
   "frontend:build": "npm run build",
   "frontend:dev:watcher": "npm run dev",
-  "frontend:dev:serverUrl": "auto"
+  "frontend:dev:serverUrl": "auto",
+  "info": {
+    "name": "fluxform",
+    "productName": "FluxForm",
+    "productVersion": "1.0.0",
+    "comments": "Offline File Converter"
+  }
 }

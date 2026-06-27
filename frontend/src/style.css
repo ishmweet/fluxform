@@ -85,8 +85,8 @@ html, body, #root {
 
 /* Segmented Control (Pill switcher) */
 .segmented-control {
-  background-color: var(--panel-bg);
-  border: 1px solid var(--border-color);
+  background-color: rgba(0, 0, 0, 0.2); /* Inset contrast against panel bg */
+  border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 100px;
   padding: 4px;
   display: flex;
@@ -96,28 +96,29 @@ html, body, #root {
 .segmented-btn {
   background: transparent;
   border: none;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.7);
   font-family: var(--font);
-  font-size: 0.9rem;
+  font-size: 0.85rem; /* Slightly more compact */
   font-weight: 600;
-  padding: 0.55rem 1.35rem;
+  padding: 0.45rem 1.25rem;
   border-radius: 100px;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   position: relative;
-  transition: var(--transition);
+  transition: all 180ms cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .segmented-btn:hover {
   color: var(--text-main);
+  background-color: rgba(255, 255, 255, 0.03); /* Subtle hover overlay */
 }
 
 .segmented-btn.active {
-  background-color: rgba(255, 255, 255, 0.06);
+  background-color: rgba(255, 255, 255, 0.1) !important; /* Libadwaita active style */
   color: var(--text-main);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25); /* Elevation shadow */
 }
 
 .badge-dot {
@@ -662,4 +663,66 @@ html, body, #root {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Drag and Drop Visual Feedback Overlay */
+.drag-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(36, 36, 36, 0.85); /* Matches Libadwaita dark canvas bg */
+  backdrop-filter: blur(10px);                /* Premium backdrop blur */
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none; /* Let drag events pass through normally */
+  animation: adwaita-reveal 150ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+}
+
+.drag-overlay-card {
+  border: 2px dashed var(--primary);
+  border-radius: var(--radius-lg);
+  padding: 3rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 400px;
+}
+
+.drag-icon {
+  color: var(--primary);
+  animation: bounce 1s infinite alternate cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-8px); }
+}
+
+/* Dependency Warnings styling */
+.dependency-warning {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ff9f0a; /* Warning Amber */
+  background-color: rgba(255, 159, 10, 0.12);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid rgba(255, 159, 10, 0.2);
+  cursor: help;
+  transition: var(--transition);
+}
+
+.dependency-warning:hover {
+  background-color: rgba(255, 159, 10, 0.2);
 }

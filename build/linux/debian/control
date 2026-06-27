@@ -1,0 +1,10 @@
+Package: fluxform
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Maintainer: FluxForm Team
+Depends: libwebkit2gtk-4.1-0, ffmpeg, imagemagick, pandoc, libreoffice
+Description: Offline file converter for Linux desktops
+ FluxForm is a beautiful GNOME-style utility to convert
+ audio, video, images, documents, and archives offline.

@@ -182,6 +182,28 @@ function App() {
     pandoc: false,
     libreoffice: false
   });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragCounter = useRef(0);
+
+  const isRequiredToolInstalled = (category: string, targetFormat: string) => {
+    if (Object.keys(tools).length === 0) return true;
+    if (category === 'Audio' || category === 'Video') {
+      return tools['ffmpeg'];
+    }
+    if (category === 'Image') {
+      return tools['magick'];
+    }
+    if (category === 'Document') {
+      if (targetFormat === 'pdf' || targetFormat === 'html') {
+        // PDF/HTML needs either Pandoc or LibreOffice (LibreOffice for docs, Pandoc/ImageMagick for markdown/images)
+        return tools['libreoffice'] || tools['pandoc'] || tools['magick'];
+      }
+      return tools['pandoc'];
+    }
+    return true;
+  };
+
+  const hasMissingTools = files.some(file => !isRequiredToolInstalled(file.category, file.targetFormat));
 
   // Initialize and check tools status
   useEffect(() => {
@@ -212,19 +234,44 @@ function App() {
       ));
     });
 
+    // Prevent default browser behavior and track dragover overlays
+    const handleDragOver = (e: DragEvent) => {
+      e.preventDefault();
+    };
+
+    const handleDragEnter = (e: DragEvent) => {
+      e.preventDefault();
+      dragCounter.current++;
+      if (dragCounter.current === 1) {
+        setIsDragging(true);
+      }
+    };
+
+    const handleDragLeave = (e: DragEvent) => {
+      e.preventDefault();
+      dragCounter.current--;
+      if (dragCounter.current === 0) {
+        setIsDragging(false);
+      }
+    };
+
+    const handleDrop = (e: DragEvent) => {
+      e.preventDefault();
+      setIsDragging(false);
+      dragCounter.current = 0;
+    };
+
+    window.addEventListener('dragover', handleDragOver, false);
+    window.addEventListener('dragenter', handleDragEnter, false);
+    window.addEventListener('dragleave', handleDragLeave, false);
+    window.addEventListener('drop', handleDrop, false);
+
     // Native Drag and Drop file drops listener
     OnFileDrop((x, y, paths) => {
       if (paths && paths.length > 0) {
         handleAddFiles(paths);
       }
     }, false); // 'false' registers the listener window-wide
-
-    // Prevent default browser behavior (navigating/displaying the file) when files are dropped
-    const preventDefault = (e: DragEvent) => {
-      e.preventDefault();
-    };
-    window.addEventListener('dragover', preventDefault, false);
-    window.addEventListener('drop', preventDefault, false);
 
     // Disable right-click context menu globally
     const handleContextMenu = (e: MouseEvent) => {
@@ -237,8 +284,10 @@ function App() {
       EventsOff('conversion-completed');
       EventsOff('conversion-failed');
       OnFileDropOff();
-      window.removeEventListener('dragover', preventDefault);
-      window.removeEventListener('drop', preventDefault);
+      window.removeEventListener('dragover', handleDragOver);
+      window.removeEventListener('dragenter', handleDragEnter);
+      window.removeEventListener('dragleave', handleDragLeave);
+      window.removeEventListener('drop', handleDrop);
       window.removeEventListener('contextmenu', handleContextMenu);
     };
   }, []);
@@ -378,11 +427,24 @@ function App() {
 
   return (
     <div className="app-container">
+      {isDragging && (
+        <div className="drag-overlay">
+          <div className="drag-overlay-card">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="drag-icon">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            <h3>Drop files to add</h3>
+            <p>Release to import selected files into the list</p>
+          </div>
+        </div>
+      )}
       {/* HEADER SECTION (COMMON) */}
       <header className="app-header">
         <div className="app-title-group">
           <h1>FluxForm</h1>
-          <p>Offline File Converter</p>
+          <p>File Converter</p>
         </div>
 
         {/* View Switcher Pills */}
@@ -433,6 +495,11 @@ function App() {
                       </div>
                       
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        {!isRequiredToolInstalled(file.category, file.targetFormat) && (
+                          <span className="dependency-warning" title={`Missing required CLI tool (${file.category === 'Audio' || file.category === 'Video' ? 'ffmpeg' : file.category === 'Image' ? 'imagemagick' : file.targetFormat === 'pdf' ? 'libreoffice/pandoc' : 'pandoc'})`}>
+                            ⚠️ Missing tool
+                          </span>
+                        )}
                         <CustomSelect 
                           value={file.targetFormat}
                           options={file.supportedFormats}
@@ -470,8 +537,9 @@ function App() {
                   <button 
                     className="btn btn-primary" 
                     onClick={triggerConversions}
+                    disabled={files.length === 0 || hasMissingTools || activeJobsCount > 0}
                   >
-                    Start Conversion
+                    {hasMissingTools ? 'Missing Tool Dependencies' : 'Start Conversion'}
                   </button>
                 </div>
               </div>
