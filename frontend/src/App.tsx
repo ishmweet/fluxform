@@ -9,7 +9,7 @@ import {
   OpenFile,
   GetToolStatus
 } from '../wailsjs/go/main/App';
-import { EventsOn, EventsOff } from '../wailsjs/runtime/runtime';
+import { EventsOn, EventsOff, OnFileDrop, OnFileDropOff } from '../wailsjs/runtime/runtime';
 
 interface FileToConvert {
   path: string;
@@ -75,10 +75,27 @@ function App() {
       ));
     });
 
+    // Native Drag and Drop file drops listener
+    OnFileDrop((x, y, paths) => {
+      if (paths && paths.length > 0) {
+        handleAddFiles(paths);
+      }
+    }, false); // 'false' registers the listener window-wide
+
+    // Prevent default browser behavior (navigating/displaying the file) when files are dropped
+    const preventDefault = (e: DragEvent) => {
+      e.preventDefault();
+    };
+    window.addEventListener('dragover', preventDefault, false);
+    window.addEventListener('drop', preventDefault, false);
+
     return () => {
       EventsOff('conversion-progress');
       EventsOff('conversion-completed');
       EventsOff('conversion-failed');
+      OnFileDropOff();
+      window.removeEventListener('dragover', preventDefault);
+      window.removeEventListener('drop', preventDefault);
     };
   }, []);
 
@@ -94,8 +111,6 @@ function App() {
   const handleAddFiles = async (filePaths: string[]) => {
     const newFiles: FileToConvert[] = [];
     for (const path of filePaths) {
-      if (files.some(f => f.path === path)) continue;
-
       const name = path.split('/').pop() || path;
       const ext = name.split('.').pop() || '';
       
@@ -119,7 +134,11 @@ function App() {
     }
 
     if (newFiles.length > 0) {
-      setFiles(prev => [...prev, ...newFiles]);
+      setFiles(prev => {
+        // Filter out duplicate file paths
+        const filtered = newFiles.filter(nf => !prev.some(f => f.path === nf.path));
+        return [...prev, ...filtered];
+      });
     }
   };
 
@@ -378,24 +397,6 @@ function App() {
       {/* FOOTER SECTION (COMMON) */}
       <footer className="status-footer">
         <span>GNU/Linux Offline Utility</span>
-        <div className="engine-status">
-          <div className="engine-item">
-            <span className={`dot ${tools.ffmpeg ? 'ok' : 'missing'}`}></span>
-            FFmpeg
-          </div>
-          <div className="engine-item">
-            <span className={`dot ${tools.magick ? 'ok' : 'missing'}`}></span>
-            ImageMagick
-          </div>
-          <div className="engine-item">
-            <span className={`dot ${tools.pandoc ? 'ok' : 'missing'}`}></span>
-            Pandoc
-          </div>
-          <div className="engine-item">
-            <span className={`dot ${tools.libreoffice ? 'ok' : 'missing'}`}></span>
-            LibreOffice
-          </div>
-        </div>
       </footer>
     </div>
   );
