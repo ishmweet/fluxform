@@ -1,0 +1,42 @@
+# Wails Build & Binary Outputs
+build/bin/
+wails.log
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+fluxform_tmp
+fluxform
+
+# Go Compiler / Dependency files
+*.test
+*.out
+go.work
+go.work.sum
+
+# Node / Vite Frontend dependencies & builds
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.svelte-kit/
+frontend/.nuxt/
+.npm
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*~
+.DS_Store
+Thumbs.db

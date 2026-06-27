@@ -1,0 +1,513 @@
+:root {
+  /* Modern Minimalist Premium Slate Palette */
+  --bg-color: #0a0b10;
+  --panel-bg: #12131a;
+  --panel-bg-hover: #181922;
+  --border-color: rgba(255, 255, 255, 0.05);
+  --input-bg: #07080b;
+  
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #475569;
+  
+  --primary: #3b82f6; /* Modern Blue */
+  --primary-hover: #60a5fa;
+  
+  --success: #10b981; /* Modern Green */
+  --success-glow: rgba(16, 185, 129, 0.08);
+  --danger: #ef4444;  /* Modern Red */
+  --danger-glow: rgba(239, 68, 68, 0.08);
+  
+  --radius-lg: 16px;
+  --radius-md: 10px;
+  --radius-sm: 6px;
+  
+  --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: var(--font);
+  font-size: 14px;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 2rem;
+}
+
+/* Header & Segmented View Switcher (Tabs) */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  flex-shrink: 0;
+}
+
+.app-title-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-title-group h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.app-title-group p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Segmented Control (Pill switcher) */
+.segmented-control {
+  background-color: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 100px;
+  padding: 4px;
+  display: flex;
+  gap: 2px;
+}
+
+.segmented-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 100px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  transition: var(--transition);
+}
+
+.segmented-btn:hover {
+  color: var(--text-main);
+}
+
+.segmented-btn.active {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: var(--text-main);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--primary);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Main View Area */
+.view-area {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Single Panel Layout (Convert or Queue exclusively) */
+.main-panel {
+  background-color: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Drag and Drop Zone */
+.dropzone {
+  border: 2px dashed rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 5rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  flex: 1;
+  transition: var(--transition);
+}
+
+.dropzone:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
+.dropzone svg {
+  stroke: var(--text-muted);
+}
+
+.dropzone h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.dropzone p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* Selection State Container */
+.selection-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  gap: 1.5rem;
+}
+
+.file-list {
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+  gap: 1.5rem;
+}
+
+.file-row:last-child {
+  border-bottom: none;
+}
+
+.file-name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.95rem;
+}
+
+.file-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+/* Controls */
+.select-input {
+  background-color: var(--panel-bg);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 0.85rem;
+  outline: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.select-input:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.select-input:focus {
+  border-color: var(--primary);
+}
+
+.path-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.path-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.path-input-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.text-input {
+  flex: 1;
+  background-color: var(--input-bg);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 0.9rem;
+  outline: none;
+  transition: var(--transition);
+}
+
+.text-input:focus {
+  border-color: var(--primary);
+}
+
+/* Action Rows */
+.action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Buttons */
+.btn {
+  background-color: rgba(255, 255, 255, 0.04);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: var(--transition);
+}
+
+.btn:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.btn:active {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  border-color: transparent;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-primary:disabled {
+  background-color: rgba(255, 255, 255, 0.02);
+  color: var(--text-dim);
+  cursor: not-allowed;
+  border: 1px solid var(--border-color);
+}
+
+.btn-danger {
+  color: #ef4444;
+}
+
+.btn-danger:hover {
+  background-color: var(--danger-glow);
+  border-color: var(--danger);
+}
+
+.btn-close {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.btn-close:hover {
+  color: var(--danger);
+  background-color: var(--danger-glow);
+}
+
+/* Queue List Container */
+.queue-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  gap: 1rem;
+}
+
+.queue-list {
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+}
+
+.queue-row {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+  gap: 0.75rem;
+  transition: var(--transition);
+}
+
+.queue-row:hover {
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
+.queue-row:last-child {
+  border-bottom: none;
+}
+
+.queue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.queue-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.queue-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.badge-pending { background-color: rgba(255, 255, 255, 0.04); color: var(--text-muted); }
+.badge-converting { background-color: rgba(59, 130, 246, 0.1); color: var(--primary); }
+.badge-completed { background-color: var(--success-glow); color: var(--success); }
+.badge-failed { background-color: var(--danger-glow); color: var(--danger); }
+
+.progress-container {
+  width: 100%;
+  height: 4px;
+  background-color: var(--panel-bg);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: var(--primary);
+  width: 0%;
+  border-radius: 10px;
+  transition: width 0.15s ease-out;
+}
+
+.progress-bar.success { background-color: var(--success); }
+.progress-bar.failed { background-color: var(--danger); }
+
+.error-text {
+  font-size: 0.78rem;
+  color: var(--danger);
+  margin-top: 0.1rem;
+}
+
+.queue-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-small {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  border-radius: 6px;
+}
+
+/* Minimalist Status Footer */
+.status-footer {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.engine-status {
+  display: flex;
+  gap: 1rem;
+}
+
+.engine-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 500;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot.ok { background-color: var(--success); }
+.dot.missing { background-color: var(--danger); }
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
