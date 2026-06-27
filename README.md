@@ -5,15 +5,16 @@
 [![React Version](https://img.shields.io/badge/React-18-61DAFB?logo=react)](https://react.dev)
 [![Framework](https://img.shields.io/badge/Framework-Wails%20v2-red)](https://wails.io)
 
-FluxForm is a free, open-source, 100% offline file converter for Linux. It allows you to convert files between audio, video, image, document, and archive formats securely on your local machine—no uploads, no internet, and complete privacy.
+FluxForm is a beautiful, offline file converter for Linux desktops designed to match the native GNOME Libadwaita dark theme. It allows you to convert files between audio, video, image, document, and archive formats securely on your local machine—no uploads, no network requests, and complete privacy.
 
 ---
 
 ## 🛡️ Key Principles
 
-*   **100% Offline**: Conversions are executed locally using system binaries under sandbox-friendly execution structures. No files ever leave your machine, and no network requests are ever made.
-*   **Linux First**: Tailored for Debian-based and RPM-based Linux distributions (Ubuntu, Fedora, Debian, etc.).
-*   **Context Menu Integration**: Native right-click context menu hooks for Linux file managers (Nautilus, Dolphin, Thunar).
+*   **100% Offline**: Conversions are executed locally using system binaries under sandbox-friendly execution structures. No files ever leave your machine.
+*   **GNOME Native Aesthetics**: Integrated with Libadwaita dark theme colors, Cantarell system fonts, and GTK-style popover animations.
+*   **Safe Drag & Drop**: Drag files window-wide with blurred overlays and bounce indicators.
+*   **Live Dependency Warnings**: Displays inline warnings (`⚠️ Missing tool`) next to the file row if the required converter engine is missing on the host.
 
 ---
 
@@ -31,15 +32,18 @@ FluxForm is a free, open-source, 100% offline file converter for Linux. It allow
 
 ## ⚙️ System Requirements
 
-To perform conversions locally, FluxForm requires the underlying command-line engines to be installed on your system.
+FluxForm requires the underlying CLI conversion engines to be installed on your Linux system to perform conversions. The application checks for these tools on launch and highlights if a required engine is missing.
 
 ### Fedora Linux (RPM-based)
+Enable the **RPM Fusion** repository first to fetch multimedia codecs, then install:
 ```bash
+sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 sudo dnf install ffmpeg ImageMagick pandoc libreoffice-headless zip unzip
 ```
 
-### Ubuntu / Debian (Debian-based)
+### Ubuntu / Debian / Linux Mint (Debian-based)
 ```bash
+sudo apt update
 sudo apt install ffmpeg imagemagick pandoc libreoffice-writer libreoffice-calc zip unzip
 ```
 
@@ -65,7 +69,6 @@ Start the application in hot-reloading development mode:
 ```bash
 wails dev
 ```
-*Note: The project configuration is preset to build against `webkit2_41` (WebKit2GTK 4.1) automatically on modern distributions.*
 
 ### Build local executable
 To build a production mode package compiled locally on your machine:
@@ -73,3 +76,45 @@ To build a production mode package compiled locally on your machine:
 wails build
 ```
 The compiled binary will be placed under `build/bin/fluxform`.
+
+---
+
+## 📦 Packaging for Distribution
+
+You can build native Linux package installers directly from your terminal after compiling the binary.
+
+### Build `.deb` Package (Debian / Ubuntu / Mint)
+On any Linux system with `dpkg` installed (run `sudo dnf install dpkg` if on Fedora):
+```bash
+# 1. Create packaging layout
+mkdir -p deb_pkg/DEBIAN
+mkdir -p deb_pkg/usr/bin
+mkdir -p deb_pkg/usr/share/applications
+mkdir -p deb_pkg/usr/share/pixmaps
+
+# 2. Copy compiled assets
+cp build/bin/fluxform deb_pkg/usr/bin/
+cp build/linux/fluxform.desktop deb_pkg/usr/share/applications/
+cp build/appicon.png deb_pkg/usr/share/pixmaps/fluxform.png
+cp build/linux/debian/control deb_pkg/DEBIAN/control
+
+# 3. Build deb installer
+dpkg-deb --build deb_pkg fluxform_1.0.0_amd64.deb
+```
+
+### Build `.rpm` Package (Fedora / RedHat)
+On Fedora (run `sudo dnf install rpm-build`):
+```bash
+# 1. Create local RPM build workspace
+mkdir -p rpmbuild/SOURCES rpmbuild/SPECS rpmbuild/RPMS rpmbuild/BUILD rpmbuild/BUILDROOT
+
+# 2. Copy source materials
+cp build/bin/fluxform rpmbuild/SOURCES/
+cp build/linux/fluxform.desktop rpmbuild/SOURCES/
+cp build/appicon.png rpmbuild/SOURCES/
+cp build/linux/rpm/fluxform.spec rpmbuild/SPECS/
+
+# 3. Compile RPM installer package
+rpmbuild --define "_topdir $(pwd)/rpmbuild" -bb rpmbuild/SPECS/fluxform.spec
+```
+The compiled package will be placed inside `rpmbuild/RPMS/x86_64/`.
